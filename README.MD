@@ -161,7 +161,7 @@ python dashboard.py
 
 ## 💡 Engineering Defense (FAANG Technical Review Strategy)
 
-If a Principal Engineer audits this system design, this is how I defend my architectural choices:
+This is how I defend my architectural choices:
 * **Why did I use `asyncio` instead of Multi-Threading for my agents?** LLM pipeline nodes are heavily bound by network I/O sockets waiting on response payloads from remote or local model daemons. By leveraging native `asyncio.gather` coroutines, I avoid the thread context-switching overhead of the Python Global Interpreter Lock (GIL), maximizing network throughput.
 * **Why did I write explicit token-counting logic using `tiktoken`?** I wanted full infrastructure observability. Instead of using raw character length shortcuts (`len(text)//4`), I initialized an explicit byte-pair encoding tokenizer matching the `cl100k_base` profile. This allows me to measure exact payload footprints and monitor real operational expenditure costs down to the microcent.
 * **Why isolate database persistence onto a separate background thread?** It creates a predictable, single point of entry for disk access. This prevents asynchronous task execution loops from clashing over shared transactional state, ensuring data persistence safety under tight production batch loads.
